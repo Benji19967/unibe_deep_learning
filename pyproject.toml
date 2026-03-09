@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "unibe_deep_learning"
+version = "0.1.0"
+description = "Deep Learning at Uni Bern"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ipykernel>=7.2.0",
+    "matplotlib>=3.10.8",
+    "numpy>=2.4.3",
+    "torch>=2.10.0",
+    "torchvision>=0.25.0",
+]
+
+[tool.uv]
+package = true
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+# [tool.ruff]
+# # Enable linting and fixing for import sorting
+# select = ["I"]  # I = isort (import sorting)
+# fix = true      # Automatically apply fixes
+
+# [project.scripts]
+# pat = "src.cli.main:cli"
