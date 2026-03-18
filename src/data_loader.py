@@ -11,6 +11,18 @@ N_IMGS = 1200
 TARGET_SIZE = (128, 128)  # Easier to compare images of the same size
 
 
+def keep_jpg_only(DIR, paths) -> list:
+    paths = [os.path.join(DIR, path) for path in paths if path.endswith(".jpg")]
+    return paths
+
+
+def load_and_format(image_paths, target_size) -> list:
+    return [
+        np.array(Image.open(path).convert("RGB").resize(target_size))
+        for path in image_paths
+    ]
+
+
 def load_images():
     dog_paths = os.listdir(DOG_DIR)
     cat_paths = os.listdir(CAT_DIR)
@@ -18,22 +30,8 @@ def load_images():
     dog_paths.sort()
     cat_paths.sort()
 
-    dog_paths = [
-        os.path.join(DOG_DIR, dog_path)
-        for dog_path in dog_paths
-        if dog_path.endswith(".jpg")
-    ]
-    cat_paths = [
-        os.path.join(CAT_DIR, cat_path)
-        for cat_path in cat_paths
-        if cat_path.endswith(".jpg")
-    ]
-
-    def load_and_format(image_paths, target_size):
-        return [
-            np.array(Image.open(path).convert("RGB").resize(target_size))
-            for path in image_paths
-        ]
+    dog_paths = keep_jpg_only(DOG_DIR, dog_paths)
+    cat_paths = keep_jpg_only(CAT_DIR, cat_paths)
 
     # Load 1200 images for each class
     dog_images = load_and_format(dog_paths[:N_IMGS], TARGET_SIZE)

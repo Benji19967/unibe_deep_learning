@@ -18,7 +18,8 @@ def main():
     predicted_labels = np.array(predicted_labels)
 
     accuracy = (y_test == predicted_labels).mean()
-    print('Accuracy: {}%'.format(100*accuracy))
+    print("Accuracy: {}%".format(100 * accuracy))
+
 
 if __name__ == "__main__":
     main()
