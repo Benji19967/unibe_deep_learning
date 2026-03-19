@@ -11,7 +11,7 @@ class MLP(nn.Module):
         self.fc3 = nn.Linear(in_features=128, out_features=10)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = F.relu(self.fc1(x))  # ReLU after first linear layer
-        x = F.relu(self.fc2(x))  # ReLU after second linear layer
-        x = F.relu(self.fc3(x))  # ReLU after third linear layer
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = F.relu(self.fc3(x))
         return x

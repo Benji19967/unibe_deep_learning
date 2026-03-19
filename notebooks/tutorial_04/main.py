@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -10,13 +11,12 @@ from torch.utils.data import DataLoader, random_split
 from torchvision.transforms import ToTensor
 from tqdm.notebook import tqdm
 
-device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
-
 HERE = Path.cwd()
 DATA_DIR = (HERE / ".." / ".." / "data").resolve()
 DATA_TUT4_DIR = DATA_DIR / "tutorial_04"
-print(DATA_TUT4_DIR)
-digits = Digits(root=str(DATA_TUT4_DIR), transforms=(ToTensor()))
+
+# device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+device = torch.device("cpu")
 
 
 def flatten(first, second):
@@ -34,6 +34,7 @@ def train_epoch(model: MLP, train_dataloader: DataLoader, optimizer, loss_fn):
     correct_predictions = 0
     # Iterate mini batches over training dataset
     for first, second, labels in tqdm(train_dataloader):
+        first, second, labels = first.to(device), second.to(device), labels.to(device)
         optimizer.zero_grad()
 
         # concat images and pass to model
@@ -58,11 +59,16 @@ def evaluate(model, dataloader, loss_fn):
     Compute loss on the validation or test set.
     """
     model.eval()
-    loss = 0
+    loss = 1
     correct = 0
     losses = []
     with torch.no_grad():
         for first, second, labels in dataloader:
+            first, second, labels = (
+                first.to(device),
+                second.to(device),
+                labels.to(device),
+            )
             logits = model(flatten(first, second))
             loss += loss_fn(logits, labels).item()
             pred = logits.data.max(1, keepdim=True)[1]
@@ -127,11 +133,12 @@ def train(model, train_dataloader, val_dataloader, optimizer, n_epochs, loss_fun
 
 
 def main():
+    digits = Digits(root=str(DATA_TUT4_DIR), transforms=(ToTensor()))
 
     train_set, val_set, test_set = random_split(digits, lengths=[0.8, 0.1, 0.1])
-    # make train, validation and test dataloaders
 
-    batch_size = 32
+    # make train, validation and test dataloaders
+    batch_size = 64
 
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False)
@@ -139,7 +146,7 @@ def main():
 
     # train the model
 
-    model = MLP()
+    model = MLP().to(device)
     optimizer = torch.optim.SGD(
         model.parameters(), lr=0.01, momentum=0.5, weight_decay=1e-4
     )

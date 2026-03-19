@@ -4,8 +4,6 @@ import torch
 from torch.utils.data import Dataset
 from torchvision.datasets.mnist import MNIST
 
-device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
-
 
 class Digits(Dataset):
     def __init__(
