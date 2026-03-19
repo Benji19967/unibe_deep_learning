@@ -11,9 +11,10 @@ from torch.utils.data import DataLoader, random_split
 from torchvision.transforms import ToTensor
 from tqdm.notebook import tqdm
 
-HERE = Path.cwd()
-DATA_DIR = (HERE / ".." / ".." / "data").resolve()
+HERE = Path(__file__)
+DATA_DIR = (HERE / ".." / ".." / ".." / "data").resolve()
 DATA_TUT4_DIR = DATA_DIR / "tutorial_04"
+print(DATA_TUT4_DIR)
 
 # device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 device = torch.device("cpu")
